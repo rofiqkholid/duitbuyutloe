@@ -1,4 +1,8 @@
 {
+  "_vendor-DZfaaDl2.js": {
+    "file": "assets/vendor-DZfaaDl2.js",
+    "name": "vendor"
+  },
   "node_modules/@fontsource/outfit/files/outfit-latin-300-normal.woff": {
     "file": "assets/outfit-latin-300-normal-AWLfuCom.woff",
     "src": "node_modules/@fontsource/outfit/files/outfit-latin-300-normal.woff"
@@ -80,7 +84,7 @@
     "src": "node_modules/@fortawesome/fontawesome-free/webfonts/fa-v4compatibility.woff2"
   },
   "resources/css/app.css": {
-    "file": "assets/app-B6Pmbx3o.css",
+    "file": "assets/app-B2iuauAh.css",
     "src": "resources/css/app.css",
     "isEntry": true,
     "name": "app",
@@ -89,9 +93,12 @@
     ]
   },
   "resources/js/app.js": {
-    "file": "assets/app-BB8nlxd4.js",
+    "file": "assets/app-CY-02xF3.js",
     "name": "app",
     "src": "resources/js/app.js",
-    "isEntry": true
+    "isEntry": true,
+    "imports": [
+      "_vendor-DZfaaDl2.js"
+    ]
   }
 }

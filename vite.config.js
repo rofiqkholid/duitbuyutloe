@@ -14,8 +14,12 @@ export default defineConfig({
         manifest: 'manifest.json',
         outDir: 'public/build',
         emptyOutDir: true,
+        chunkSizeWarningLimit: 1000,
         rollupOptions: {
             output: {
+                manualChunks: {
+                    vendor: ['lucide', 'viewerjs', 'axios'],
+                },
                 // Memberikan hash acak unik di setiap build untuk cache busting di server hosting
                 entryFileNames: `assets/[name]-[hash].js`,
                 chunkFileNames: `assets/[name]-[hash].js`,

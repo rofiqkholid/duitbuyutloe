@@ -57,6 +57,18 @@ class DashboardController extends Controller
         // Statistik umum
         $totalKontrakanBills = Bill::sum('total_amount');
         $allUnpaidBills = BillShare::where('status', 'unpaid')->count();
+        $totalUnpaidAmount = BillShare::where('status', 'unpaid')->sum('amount');
+
+        // Cari penghuni dengan utang tertinggi
+        $highestDebtorShare = BillShare::with('user')
+            ->where('status', 'unpaid')
+            ->selectRaw('user_id, sum(amount) as total_debt')
+            ->groupBy('user_id')
+            ->orderByDesc('total_debt')
+            ->first();
+
+        $highestDebtorName = $highestDebtorShare ? $highestDebtorShare->user?->name : 'Nihil';
+        $highestDebtorAmount = $highestDebtorShare ? (int)$highestDebtorShare->total_debt : 0;
 
         return view('dashboard', compact(
             'users',
@@ -67,7 +79,10 @@ class DashboardController extends Controller
             'totalMyDebt',
             'totalToReceive',
             'totalKontrakanBills',
-            'allUnpaidBills'
+            'allUnpaidBills',
+            'totalUnpaidAmount',
+            'highestDebtorName',
+            'highestDebtorAmount'
         ));
     }
 }

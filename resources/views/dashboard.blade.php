@@ -12,14 +12,14 @@
                     Halo, {{ $currentUser->name }}! 👋
                 </h2>
                 <p class="text-xs sm:text-base text-slate-600 mt-2 max-w-2xl leading-relaxed">
-                    Setiap faktur yang diupload otomatis dibagi <strong>5 penghuni</strong> (Rofiq, Amin, Tangguh, Reza, Saeful). Orang yang bayar duluan statusnya otomatis lunas dan menerima transferan dari yang lain.
+                    Setiap faktur yang diupload otomatis dibagi rata <strong>5 penghuni</strong>. Yang nalangin duluan langsung lunas, sisanya wajib sadar diri buat transfer.
                 </p>
             @else
                 <h2 class="text-xl sm:text-3xl font-semibold text-slate-900 tracking-tight">
-                    Iuran Kontrakan 🏠
+                    Duit Buyut Loe 🏠
                 </h2>
                 <p class="text-xs sm:text-base text-slate-600 mt-2 max-w-2xl leading-relaxed">
-                    Keterbukaan informasi tagihan bersama (wifi, listrik, air, galon). Masuk ke sistem untuk melakukan pembayaran atau upload faktur.
+                    Biar nggak ada yang pura-pura lupa ingatan pas tagihan wifi, listrik, air, & uang kang sampah nongol. Emang dikira duit buyut loe yang bayarin? Login sekarang, bayar utang loe!
                 </p>
             @endauth
         </div>
@@ -40,7 +40,7 @@
         <!-- Hutang Saya -->
         <div class="rounded-2xl bg-white border border-slate-200 p-4 sm:p-5 hover:border-rose-300 transition-colors">
             <div class="flex items-center justify-between mb-2 sm:mb-3">
-                <span class="text-xs font-medium text-slate-500">Hutang saya</span>
+                <span class="text-xs font-medium text-slate-500">Dosa masa lalu (Utang lu)</span>
                 <div class="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-rose-50 text-rose-600 flex items-center justify-center">
                     <i data-lucide="arrow-up-right" class="w-4 h-4 sm:w-5 sm:h-5"></i>
                 </div>
@@ -49,14 +49,14 @@
                 Rp {{ number_format($totalMyDebt, 0, ',', '.') }}
             </div>
             <p class="text-[11px] sm:text-xs text-slate-500 mt-1 sm:mt-2 font-medium">
-                {{ $myUnpaidShares->where('status', 'unpaid')->count() }} tagihan belum kamu bayar
+                {{ $myUnpaidShares->where('status', 'unpaid')->count() }} tagihan belum lu bayar, jangan amnesia
             </p>
         </div>
 
         <!-- Piutang Saya (Yang Ditalangi) -->
         <div class="rounded-2xl bg-white border border-slate-200 p-4 sm:p-5 hover:border-emerald-300 transition-colors">
             <div class="flex items-center justify-between mb-2 sm:mb-3">
-                <span class="text-xs font-medium text-slate-500">Uang masuk (talangan)</span>
+                <span class="text-xs font-medium text-slate-500">Duit lu yang disandera</span>
                 <div class="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center">
                     <i data-lucide="arrow-down-left" class="w-4 h-4 sm:w-5 sm:h-5"></i>
                 </div>
@@ -65,7 +65,43 @@
                 Rp {{ number_format($totalToReceive, 0, ',', '.') }}
             </div>
             <p class="text-[11px] sm:text-xs text-slate-500 mt-1 sm:mt-2 font-medium">
-                Perlu kamu terima dari teman kontrakan
+                Wajib ditagih sebelum mereka pura-pura miskin
+            </p>
+        </div>
+    @else
+        <!-- Uang Deposit Rumah (Saat Belum Login) -->
+        <div class="rounded-2xl bg-white border border-slate-200 p-4 sm:p-5 hover:border-amber-300 transition-colors">
+            <div class="flex items-center justify-between mb-2 sm:mb-3">
+                <span class="text-xs font-medium text-slate-500">Uang Deposit Rumah</span>
+                <div class="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center">
+                    <i data-lucide="shield-alert" class="w-4 h-4 sm:w-5 sm:h-5"></i>
+                </div>
+            </div>
+            <div class="text-xl sm:text-3xl font-semibold text-amber-600">
+                Rp 3.000.000
+            </div>
+            <p class="text-[11px] sm:text-xs text-slate-500 mt-1 sm:mt-2 font-medium">
+                Uang jaminan yang nyangkut di ibu kontrakan
+            </p>
+        </div>
+
+        <!-- Utang Tertinggi Siapa (Saat Belum Login) -->
+        <div class="rounded-2xl bg-white border border-slate-200 p-4 sm:p-5 hover:border-rose-300 transition-colors">
+            <div class="flex items-center justify-between mb-2 sm:mb-3">
+                <span class="text-xs font-medium text-slate-500">Utang tertinggi siapa</span>
+                <div class="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-rose-50 text-rose-600 flex items-center justify-center">
+                    <i data-lucide="crown" class="w-4 h-4 sm:w-5 sm:h-5"></i>
+                </div>
+            </div>
+            <div class="text-xl sm:text-3xl font-semibold text-rose-600">
+                Rp {{ number_format($highestDebtorAmount, 0, ',', '.') }}
+            </div>
+            <p class="text-[11px] sm:text-xs text-slate-500 mt-1 sm:mt-2 font-medium">
+                @if($highestDebtorAmount > 0)
+                    <strong class="text-slate-800">{{ $highestDebtorName }}</strong> lu kira rumah nenek moyang lu? Login & bayar!
+                @else
+                    Aman, gaada yang nunggak utang!
+                @endif
             </p>
         </div>
     @endauth
@@ -73,7 +109,7 @@
     <!-- Total Biaya Bersama -->
     <div class="rounded-2xl bg-white border border-slate-200 p-4 sm:p-5 hover:border-indigo-300 transition-colors">
         <div class="flex items-center justify-between mb-2 sm:mb-3">
-            <span class="text-xs font-medium text-slate-500">Total biaya kontrakan</span>
+            <span class="text-xs font-medium text-slate-500">Total duit melayang</span>
             <div class="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center">
                 <i data-lucide="wallet" class="w-4 h-4 sm:w-5 sm:h-5"></i>
             </div>
@@ -81,21 +117,21 @@
         <div class="text-xl sm:text-3xl font-semibold text-slate-900">
             Rp {{ number_format($totalKontrakanBills, 0, ',', '.') }}
         </div>
-        <p class="text-[11px] sm:text-xs text-slate-500 mt-1 sm:mt-2 font-medium">Akumulasi seluruh pengeluaran</p>
+        <p class="text-[11px] sm:text-xs text-slate-500 mt-1 sm:mt-2 font-medium">Pengeluaran nyata, bukan dibayarin duit buyut loe</p>
     </div>
 
     <!-- 5 Anggota -->
     <div class="rounded-2xl bg-white border border-slate-200 p-4 sm:p-5 hover:border-cyan-300 transition-colors">
         <div class="flex items-center justify-between mb-2 sm:mb-3">
-            <span class="text-xs font-medium text-slate-500">Anggota kontrakan</span>
+            <span class="text-xs font-medium text-slate-500">Beban bersama</span>
             <div class="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-cyan-50 text-cyan-600 flex items-center justify-center">
                 <i data-lucide="users" class="w-4 h-4 sm:w-5 sm:h-5"></i>
             </div>
         </div>
         <div class="text-xl sm:text-3xl font-semibold text-slate-900">
-            5 Penghuni
+            Ada 5 Pangeran
         </div>
-        <p class="text-[11px] sm:text-xs text-slate-500 mt-1 sm:mt-2 font-medium">Bagi rata 20% per orang</p>
+        <p class="text-[11px] sm:text-xs text-slate-500 mt-1 sm:mt-2 font-medium">Patungan 20% rata, gaada ceritanya numpang gratis</p>
     </div>
 </div>
 
@@ -108,7 +144,7 @@
             <div class="flex items-center justify-between mb-4 sm:mb-5">
                 <h3 class="text-base sm:text-lg font-bold text-slate-900 flex items-center gap-2">
                     <i class="fa-solid fa-bell text-rose-500"></i>
-                    Tagihan kamu (wajib ditransfer)
+                    Beban hidup lu (cepetan transfer!)
                 </h3>
             </div>
 
@@ -117,8 +153,8 @@
                     <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-emerald-50 text-emerald-600 mx-auto flex items-center justify-center mb-3">
                         <i data-lucide="check-check" class="w-5 h-5 sm:w-6 sm:h-6"></i>
                     </div>
-                    <p class="font-bold text-sm sm:text-base text-slate-800">Semua tagihanmu sudah lunas!</p>
-                    <p class="text-xs text-slate-500 mt-1 max-w-sm mx-auto">Kamu tidak punya tanggungan hutang ke teman kontrakan saat ini.</p>
+                    <p class="font-bold text-sm sm:text-base text-slate-800">Aman! Lu lagi jadi warga teladan 🎉</p>
+                    <p class="text-xs text-slate-500 mt-1 max-w-sm mx-auto">Gaada utang yang nunggak. Pertahankan gengsi dan kewarasan lu ini.</p>
                 </div>
             @else
                 <div class="overflow-x-auto -mx-4 sm:mx-0 px-4 sm:px-0">
@@ -184,12 +220,18 @@
     <!-- DAFTAR FAKTUR KONTRAKAN (FULL WIDTH) -->
     <div class="rounded-2xl bg-white border border-slate-200 p-4 sm:p-6">
         <div class="flex items-center justify-between mb-4 sm:mb-5">
-            <h3 class="text-base sm:text-lg font-bold text-slate-900 flex items-center gap-2 sm:gap-2.5">
-                <i class="fa-solid fa-coins text-amber-500"></i>
-                <span>Riwayat faktur pengeluaran</span>
-            </h3>
-            <a href="{{ route('bills.index') }}" class="text-xs text-indigo-600 hover:text-indigo-700 font-bold flex items-center gap-1 flex-shrink-0">
-                Lihat semua <i data-lucide="chevron-right" class="w-3.5 h-3.5 sm:w-4 sm:h-4"></i>
+            <div>
+                <h3 class="text-base sm:text-lg font-bold text-slate-900 flex items-center gap-2 sm:gap-2.5">
+                    <i class="fa-solid fa-coins text-amber-500"></i>
+                    <span>Bukti dosa & bon pengeluaran</span>
+                </h3>
+                <p class="text-xs text-slate-500 mt-1">
+                    Pangeran yg muncul disini kece-kece!
+                </p>
+            </div>
+            <a href="{{ route('bills.index') }}" class="text-xs text-indigo-600 hover:text-indigo-700 font-bold flex items-center gap-1 flex-shrink-0 p-1 sm:p-0" title="Lihat semua faktur">
+                <span class="hidden sm:inline">Lihat semua</span>
+                <i data-lucide="chevron-right" class="w-4 h-4"></i>
             </a>
         </div>
 
@@ -255,10 +297,10 @@
         <div class="rounded-2xl bg-white border border-slate-200 p-4 sm:p-6 flex flex-col h-full">
             <h3 class="text-base font-bold text-slate-900 flex items-center gap-2 mb-2 flex-shrink-0">
                 <i data-lucide="credit-card" class="w-5 h-5 text-indigo-600"></i>
-                <span>Rekening 5 penghuni kontrakan</span>
+                <span>Rekening para korban nalangin</span>
             </h3>
             <p class="text-xs text-slate-500 mb-4 flex-shrink-0">
-                Informasi nomor rekening tujuan transfer sesama anak kontrakan:
+                Tujuan transfer buat balikin duit orang:
             </p>
 
             <div class="space-y-3 flex-1 overflow-y-auto max-h-[460px] pr-1">
@@ -291,15 +333,15 @@
             <div class="rounded-2xl bg-white border border-slate-200 p-4 sm:p-6 flex flex-col h-full">
                 <h3 class="text-base font-bold text-slate-900 flex items-center gap-2 mb-2 flex-shrink-0">
                     <i data-lucide="hand-coins" class="w-5 h-5 text-emerald-600"></i>
-                    <span>Uang yang kamu talangi</span>
+                    <span>Daftar debitur / yang ngutang ke lu</span>
                 </h3>
                 <p class="text-xs text-slate-500 mb-4 flex-shrink-0">
-                    Daftar teman yang berhutang ke rekeningmu karena kamu bayar duluan:
+                    Duit lu masih nyangkut di mereka, jangan kasih kendor sampai ditransfer:
                 </p>
 
                 @if($claimsToReceive->isEmpty())
                     <div class="text-center py-6 text-slate-400 text-xs flex-1 flex items-center justify-center">
-                        Tidak ada piutang pending.
+                        Dompet aman, gaada yang ngutang ke lu saat ini.
                     </div>
                 @else
                     <div class="space-y-3 flex-1 overflow-y-auto max-h-[460px] pr-1 no-scrollbar">

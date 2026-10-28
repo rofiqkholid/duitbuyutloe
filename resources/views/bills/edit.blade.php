@@ -19,10 +19,10 @@
     <div class="rounded-2xl bg-white border border-slate-200 p-5 sm:p-8 space-y-6">
         <div class="pb-6 border-b border-slate-100">
             <h1 class="text-xl sm:text-3xl font-semibold text-slate-900 tracking-tight">
-                Edit Faktur Tagihan
+                Edit Bon Tagihan (Biar Ga Nombok)
             </h1>
             <p class="text-xs sm:text-sm text-slate-500 font-normal mt-1.5">
-                Perbarui rincian nominal atau foto faktur tagihan.
+                Perbarui rincian nominal atau bukti struk kalau ada yang salah hitung.
             </p>
         </div>
 
@@ -37,12 +37,12 @@
                         {{ substr($bill->payer->name, 0, 1) }}
                     </div>
                     <div>
-                        <span class="text-xs text-slate-500 font-medium block">Ditalangi oleh (Pembuat Faktur):</span>
+                        <span class="text-xs text-slate-500 font-medium block">Orang ganteng nalangin:</span>
                         <div class="text-sm font-bold text-slate-900">{{ $bill->payer->name }}</div>
                     </div>
                 </div>
                 <div class="text-left sm:text-right">
-                    <span class="text-xs text-slate-500 font-medium block">Rekening tujuan transfer:</span>
+                    <span class="text-xs text-slate-500 font-medium block">Rekening tujuan transfer balik:</span>
                     <span class="text-xs text-slate-700">
                         {{ $bill->payer->paymentMethods->first()?->type ?? 'Belum ada rekening' }}
                         @if($bill->payer->paymentMethods->first())
@@ -56,18 +56,17 @@
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                     <label class="block text-sm font-bold text-slate-800 mb-2">
-                        Type (Tipe Tagihan) <span class="text-rose-600">*</span>
+                        Tipe Tagihan <span class="text-rose-600">*</span>
                     </label>
                     <x-custom-select 
                         name="type" 
                         :selected="old('type', strtolower($bill->type))" 
                         :options="[
-                            'wifi' => '🌐 Wifi / Internet',
-                            'listrik' => '⚡ Listrik / PLN',
-                            'air' => '💧 Air PDAM',
-                            'galon' => '🥤 Galon / Gas',
-                            'kebersihan' => '🧹 Kebersihan',
-                            'lainnya' => '📦 Lainnya'
+                            'wifi' => '🌐 Wifi (Yang dipake nonton Pekob)',
+                            'listrik' => '⚡ Listrik (Charger & kipas nyala terus ga mati-mati)',
+                            'air' => '💧 Air PDAM (Mandi berjam-jam berasa lagi cuci dosa)',
+                            'sampah' => '🗑️ Uang Sampah (Biar kang sampah ga males ambil)',
+                            'lainnya' => '📦 Pengeluaran Lainnya'
                         ]" 
                         required 
                     />
@@ -76,7 +75,7 @@
                     <label class="block text-sm font-bold text-slate-800 mb-2">
                         Judul Faktur <span class="text-xs font-normal text-slate-400">(Opsional)</span>
                     </label>
-                    <input type="text" name="title" value="{{ old('title', $bill->title) }}" placeholder="Kosongkan untuk otomatis 'Tagihan [Jenis]'" class="w-full h-11 px-3.5 rounded-xl bg-white border border-slate-300 text-slate-900 text-sm focus:outline-none focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600">
+                    <input type="text" name="title" value="{{ old('title', $bill->title) }}" placeholder="Kosongkan kalau males mikir nama" class="w-full h-11 px-3.5 rounded-xl bg-white border border-slate-300 text-slate-900 text-sm focus:outline-none focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600">
                 </div>
             </div>
 
@@ -89,7 +88,7 @@
                     <input type="hidden" id="total_amount" name="total_amount" value="{{ old('total_amount', (int)$bill->total_amount) }}" required>
                     <input type="text" id="total_amount_display" inputmode="numeric" placeholder="100.000" required class="w-full h-11 px-3.5 rounded-xl bg-white border border-slate-300 text-slate-900 text-sm focus:outline-none focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600">
                     <div id="splitPreview" class="mt-2 text-xs text-slate-500">
-                        Bagi 5 orang: Rp 0 / orang
+                        Beban per kepala (5 orang): Rp 0 / orang
                     </div>
                 </div>
                 <div>
@@ -103,7 +102,7 @@
             <!-- Foto Faktur -->
             <div>
                 <label class="block text-sm font-bold text-slate-800 mb-2">
-                    Foto / Kuitansi Faktur Tagihan (Opsional)
+                    Foto Bukti / Struk (Biar ga dikira korupsi)
                 </label>
                 @if($bill->invoice_image)
                     <div class="mb-3 p-3.5 rounded-xl bg-slate-50 border border-slate-200 flex items-center justify-between gap-3">
@@ -118,18 +117,18 @@
                                 </div>
                             @endif
                             <div class="min-w-0">
-                                <span class="text-xs font-bold text-slate-800 block truncate">Foto Faktur Tersimpan</span>
+                                <span class="text-xs font-bold text-slate-800 block truncate">Bukti Bon Tersimpan</span>
                                 <span class="text-[11px] text-slate-500 block truncate">{{ basename($bill->invoice_image) }}</span>
                             </div>
                         </div>
                         <a href="{{ asset('storage/' . $bill->invoice_image) }}" target="_blank" class="px-3 py-1.5 rounded-lg bg-white border border-slate-200 text-xs font-semibold text-slate-700 hover:bg-slate-100 hover:text-slate-900 transition-colors flex-shrink-0">
-                            Lihat Foto
+                            Lihat Bukti
                         </a>
                     </div>
                 @else
                     <div class="mb-3 p-3 rounded-xl bg-slate-50 border border-slate-200 text-xs text-slate-500 font-normal flex items-center gap-2">
                         <i class="fa-solid fa-circle-info text-slate-400"></i>
-                        <span>Belum ada foto/kuitansi faktur yang tersimpan untuk tagihan ini. Silakan pilih file di bawah jika ingin mengunggah.</span>
+                        <span>Belum ada foto/struk bon yang diunggah. Unggah di bawah biar transparan.</span>
                     </div>
                 @endif
                 <input 
@@ -139,7 +138,7 @@
                     accept="image/*,application/pdf" 
                     class="file-btn-primary w-full px-3.5 py-2.5 rounded-xl bg-slate-50 border border-dashed border-slate-300 text-slate-500 text-xs cursor-pointer"
                 >
-                <span class="text-[11px] text-slate-400 mt-1 block">Biarkan kosong jika tidak ingin mengubah foto faktur. Maks 5MB.</span>
+                <span class="text-[11px] text-slate-400 mt-1 block">Biarkan kosong kalau gamau ganti foto bukti. Maks 5MB.</span>
                 @error('invoice_image')
                     <span class="text-xs text-rose-600 font-medium mt-1 block">{{ $message }}</span>
                 @enderror
@@ -148,7 +147,7 @@
                 <div id="uploadProgressBarContainer" class="hidden mt-3 p-3 rounded-xl bg-slate-50 border border-slate-200 space-y-1.5 transition-all">
                     <div class="flex items-center justify-between text-xs">
                         <span id="uploadProgressText" class="font-medium text-slate-600 flex items-center gap-1.5">
-                            <i class="fa-solid fa-spinner fa-spin text-slate-400"></i> Memuat faktur...
+                            <i class="fa-solid fa-spinner fa-spin text-slate-400"></i> Memuat bukti...
                         </span>
                         <span id="uploadProgressPercent" class="font-medium text-slate-600">0%</span>
                     </div>
@@ -182,15 +181,15 @@
             <!-- Catatan -->
             <div>
                 <label class="block text-sm font-bold text-slate-800 mb-2">
-                    Catatan Tambahan (Opsional)
+                    Catatan Tambahan (Buat nyindir yang lama bayar)
                 </label>
-                <textarea name="description" rows="3" placeholder="Contoh: Sudah dibayar via m-banking. Mohon transfer ke rekening saya ya teman-teman." class="w-full px-3.5 py-2.5 rounded-xl bg-white border border-slate-300 text-slate-900 text-sm focus:outline-none focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600">{{ old('description', $bill->description) }}</textarea>
+                <textarea name="description" rows="3" placeholder="Contoh: Udah gw talangin dulu nih. Tolong transfer secepatnya ya, emang dikira duit buyut gw!" class="w-full px-3.5 py-2.5 rounded-xl bg-white border border-slate-300 text-slate-900 text-sm focus:outline-none focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600">{{ old('description', $bill->description) }}</textarea>
             </div>
 
             <!-- Submit -->
             <div class="flex items-center justify-end gap-3 pt-4 border-t border-slate-200">
                 <a href="{{ route('bills.show', $bill->id) }}" class="px-5 py-2.5 rounded-xl bg-slate-100 text-slate-700 hover:bg-slate-200 text-sm font-bold transition-colors">
-                    Batal
+                    Gajadi Deh
                 </a>
                 <button type="submit" class="px-6 py-2.5 rounded-full font-bold text-sm btn-primary cursor-pointer">
                     Simpan Perubahan
@@ -220,7 +219,7 @@
         displayInput.value = numericVal > 0 ? formatRupiah(numericVal) : '';
 
         const perPerson = Math.round(numericVal / 5);
-        previewEl.innerText = `Bagi 5 orang: Rp ${formatRupiah(perPerson)} / orang`;
+        previewEl.innerText = `Beban per kepala (5 orang): Rp ${formatRupiah(perPerson)} / orang`;
     }
 
     displayInput.addEventListener('input', updateCalculations);

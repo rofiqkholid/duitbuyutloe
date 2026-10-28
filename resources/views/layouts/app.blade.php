@@ -3,7 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@yield('title', 'Iuran Kontrakan') - Split Bill & Manajemen Faktur</title>
+    <meta name="theme-color" content="#7c3aed">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="Duit Buyut Loe">
+    <link rel="manifest" href="/manifest.json">
+    <link rel="apple-touch-icon" href="/favicon.ico">
+    <title>@yield('title', 'Duit Buyut Loe') - Split Bill & Manajemen Faktur</title>
     <!-- Tailwind CSS, FontAwesome & Outfit Font compiled via Vite (Tanpa CDN) -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
@@ -18,7 +24,7 @@
                 </div>
                 <div>
                     <h1 class="text-base sm:text-lg font-bold tracking-tight text-slate-900">
-                        Iuran Kontrakan
+                        Duit Buyut Loe
                     </h1>
                 </div>
             </a>
@@ -92,10 +98,11 @@
 
     <!-- Footer -->
     <footer class="border-t border-slate-200 bg-white py-6 text-center text-xs text-slate-500">
-        &copy; {{ date('Y') }} Sistem Iuran Kontrakan &bull; Login Nomor Induk Kewarasan (NIK)
+        &copy; {{ date('Y') }} Duit Buyut Loe by Dyanaf Creative Solution
     </footer>
 
     @include('components.confirm-modal')
+    @include('partials.pwa-prompt')
 
     @yield('scripts')
     <script>

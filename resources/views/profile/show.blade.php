@@ -12,7 +12,7 @@
                 <span class="hidden sm:inline">Dashboard</span>
             </a>
             <h1 class="text-base sm:text-xl font-bold text-slate-900 tracking-tight leading-tight">
-                Pengaturan Profil & Rekening
+                Pengaturan Profil & Rekening Korban
             </h1>
         </div>
     </div>
@@ -29,7 +29,7 @@
                     </div>
                     <div>
                         <h2 class="text-base font-bold text-slate-900">Rekening Tujuan Transfer</h2>
-                        <p class="text-xs text-slate-500 font-medium">Rekening yang dipakai teman-teman saat transfer ke kamu.</p>
+                        <p class="text-xs text-slate-500 font-medium">Biar temen lu tau mau balikin duit ke mana (jangan sampe salah no rek!)</p>
                     </div>
                 </div>
 
@@ -62,7 +62,7 @@
                     @endif
 
                     <div>
-                        <label class="block text-xs font-bold text-slate-700 mb-1.5">Upload Gambar QRIS (Opsional)</label>
+                        <label class="block text-xs font-bold text-slate-700 mb-1.5">Upload QRIS (Biar yang males ngetik tinggal scan)</label>
                         <input type="file" name="qr_code_image" accept="image/*" class="w-full text-xs text-slate-500 file:mr-3 file:py-2 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-normal file:bg-slate-100 file:text-slate-700 hover:file:bg-slate-200">
                     </div>
                 </form>
@@ -70,7 +70,7 @@
 
             <div class="pt-5 mt-4 border-t border-slate-100">
                 <button type="submit" form="paymentMethodForm" class="w-full py-2.5 px-4 rounded-full font-bold text-xs btn-primary">
-                    Simpan Rekening
+                    Simpan Rekening Buat Nampung Duit
                 </button>
             </div>
         </div>
@@ -83,8 +83,8 @@
                         <i data-lucide="user-cog" class="w-5 h-5"></i>
                     </div>
                     <div>
-                        <h2 class="text-base font-bold text-slate-900">Data Akun Penghuni</h2>
-                        <p class="text-xs text-slate-500 font-normal">Informasi identitas akun kamu di kontrakan.</p>
+                        <h2 class="text-base font-bold text-slate-900">Data Akun Warga Kontrakan</h2>
+                        <p class="text-xs text-slate-500 font-normal">Identitas resmi lu di kontrakan ini.</p>
                     </div>
                 </div>
 
@@ -108,7 +108,7 @@
                     </div>
 
                     <div>
-                        <label class="block text-xs font-bold text-slate-700 mb-1.5">Nomor WhatsApp / HP (Opsional)</label>
+                        <label class="block text-xs font-bold text-slate-700 mb-1.5">Nomor WhatsApp / HP (Biar gampang ditagih utang)</label>
                         <input type="text" name="phone" value="{{ old('phone', $user->phone) }}" placeholder="08xxxxxxxxxx" class="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-700 text-xs font-normal focus:bg-white focus:border-indigo-500 focus:outline-none transition-all">
                     </div>
 
@@ -116,7 +116,7 @@
                     <div class="pt-3 border-t border-slate-100 space-y-3">
                         <div class="flex items-center gap-2">
                             <i data-lucide="key-round" class="w-4 h-4 text-slate-500"></i>
-                            <span class="text-xs font-bold text-slate-800">Ganti Password (Kosongkan jika tidak diubah)</span>
+                            <span class="text-xs font-bold text-slate-800">Ganti Password (Kosongkan kalau gamau ribet)</span>
                         </div>
 
                         <div>

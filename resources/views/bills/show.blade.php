@@ -23,7 +23,7 @@
                     {{ $bill->title }}
                 </h1>
                 <p class="text-xs sm:text-sm text-slate-500 font-normal mt-1.5">
-                    {{ $bill->description ?: 'Tidak ada catatan tambahan untuk tagihan ini.' }}
+                    {{ $bill->description ?: 'Gaada catatan apa-apa, pokoknya langsung transfer aja ya.' }}
                 </p>
             </div>
 
@@ -36,24 +36,24 @@
                 @if($canPay)
                     <button type="button" onclick="document.getElementById('modal-{{ $myShare->id }}').classList.remove('hidden')" class="inline-flex items-center gap-2 px-4 py-2 rounded-full text-xs sm:text-sm font-bold btn-primary cursor-pointer shadow-none transition-all hover:scale-105" title="Bayar tagihan ini">
                         <i class="fa-solid fa-credit-card text-white text-xs"></i>
-                        <span>Bayar</span>
+                        <span>Bayar Utang</span>
                     </button>
                 @endif
 
                 @if(Auth::check() && Auth::id() == $bill->payer_id)
                     <a href="{{ route('bills.edit', $bill->id) }}" class="px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold transition-all">
-                        Edit faktur
+                        Edit bon
                     </a>
                     <form action="{{ route('bills.destroy', $bill->id) }}" method="POST">
                         @csrf
                         @method('DELETE')
                         <button type="button" 
-                                data-confirm="Apakah Anda yakin ingin menghapus faktur ini? Tindakan ini tidak dapat dibatalkan." 
-                                data-confirm-title="Hapus Faktur Tagihan" 
-                                data-confirm-btn="Ya, Hapus"
+                                data-confirm="Yakin mau hapus bon tagihan ini? Duit talangan lu bisa lenyap tak berbekas!" 
+                                data-confirm-title="Hapus Bon Tagihan" 
+                                data-confirm-btn="Ya, Hapus Aja"
                                 data-confirm-type="danger"
                                 class="px-4 py-2 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 hover:bg-rose-100 text-xs font-semibold transition-all cursor-pointer">
-                            Hapus faktur
+                            Hapus bon
                         </button>
                     </form>
                 @endif
@@ -65,7 +65,7 @@
             <div class="p-5 rounded-xl bg-slate-50 border border-slate-200 flex flex-col justify-between">
                 <div>
                     <span class="text-xs text-slate-500 font-medium block mb-2">
-                        Tujuan pembayaran (ditalangi oleh)
+                        Tujuan transfer (korban yang nalangin)
                     </span>
                     <div class="text-base font-medium text-slate-800">{{ $bill->payer->name }}</div>
                     @php $pm = $bill->payer->paymentMethods->first(); @endphp
@@ -78,14 +78,14 @@
                         </div>
                     @else
                         <div class="text-xs text-slate-500 font-normal mt-1">
-                            Belum mengisi nomor rekening. Bayar tunai ke {{ $bill->payer->name }}.
+                            Belum ngisi rekening. Samperin orangnya, bayar tunai ke {{ $bill->payer->name }}.
                         </div>
                     @endif
                 </div>
 
                 <div class="pt-4 mt-4 border-t border-slate-200/70 flex items-center justify-between text-xs gap-2">
                     <div class="flex items-center gap-1.5 sm:gap-2">
-                        <span class="text-slate-500 font-normal">Tanggal:</span>
+                        <span class="text-slate-500 font-normal">Tanggal terbit dosa:</span>
                         <span class="font-medium text-slate-800">
                             <span class="sm:hidden">{{ \Carbon\Carbon::parse($bill->bill_date)->format('d M Y') }}</span>
                             <span class="hidden sm:inline">{{ \Carbon\Carbon::parse($bill->bill_date)->format('d F Y') }}</span>
@@ -94,9 +94,9 @@
 
                     @if($bill->invoice_image)
                         <img id="invoiceViewerImage" src="{{ asset('storage/' . $bill->invoice_image) }}" class="hidden" alt="Foto Faktur: {{ $bill->title }}">
-                        <button type="button" onclick="viewInvoice()" class="inline-flex items-center gap-2 px-3.5 py-1.5 sm:px-4 sm:py-2 rounded-full text-xs sm:text-sm font-bold btn-primary cursor-pointer shadow-none transition-all hover:scale-105 flex-shrink-0" title="Lihat Foto Faktur">
+                        <button type="button" onclick="viewInvoice()" class="inline-flex items-center gap-2 px-3.5 py-1.5 sm:px-4 sm:py-2 rounded-full text-xs sm:text-sm font-bold btn-primary cursor-pointer shadow-none transition-all hover:scale-105 flex-shrink-0" title="Lihat Bukti Bon">
                             <i class="fa-solid fa-image text-white text-xs sm:text-sm"></i>
-                            <span>Faktur</span>
+                            <span>Bukti Bon</span>
                         </button>
                     @endif
                 </div>
@@ -105,7 +105,7 @@
             <!-- Summary Box -->
             <div class="p-5 rounded-xl bg-slate-50 border border-slate-200 flex flex-col justify-between text-center sm:text-left">
                 <div>
-                    <span class="text-xs text-slate-500 font-medium block mb-1">Total nilai faktur</span>
+                    <span class="text-xs text-slate-500 font-medium block mb-1">Total duit yang ditalangin orang ganteng</span>
                     <div class="text-2xl sm:text-3xl font-bold text-slate-900">
                         Rp {{ number_format($bill->total_amount, 0, ',', '.') }}
                     </div>
@@ -113,12 +113,12 @@
 
                 <div class="pt-4 mt-4 border-t border-slate-200/70 flex items-center justify-between">
                     <div>
-                        <span class="text-xs text-slate-500 font-normal block">Bagi rata 5 orang:</span>
+                        <span class="text-xs text-slate-500 font-normal block">Porsi patungan per kepala:</span>
                         <span class="text-lg font-normal text-slate-800">
                             Rp {{ number_format($bill->share_amount, 0, ',', '.') }}
                         </span>
                     </div>
-                    <span class="text-xs text-slate-400 font-normal">per penghuni</span>
+                    <span class="text-xs text-slate-400 font-normal">bagi 5 manusia</span>
                 </div>
             </div>
         </div>
@@ -128,14 +128,14 @@
     <div class="rounded-2xl bg-white border border-slate-200 p-4 sm:p-8">
         <h3 class="text-base sm:text-lg font-bold text-slate-900 mb-4 sm:mb-5 flex items-center gap-2">
             <i data-lucide="users" class="w-5 h-5 text-indigo-600"></i>
-            <span>Rincian iuran 5 penghuni kontrakan</span>
+            <span>Daftar manusia yang wajib patungan</span>
         </h3>
 
         <div class="overflow-x-auto -mx-4 sm:mx-0 px-4 sm:px-0">
             <table class="w-full text-left text-xs sm:text-sm whitespace-nowrap sm:whitespace-normal">
                 <thead class="text-xs text-slate-500 bg-slate-50 border-b border-slate-200">
                     <tr>
-                        <th class="py-2.5 sm:py-3 px-3 sm:px-4 font-bold">Penghuni</th>
+                        <th class="py-2.5 sm:py-3 px-3 sm:px-4 font-bold">Warga</th>
                         <th class="py-2.5 sm:py-3 px-3 sm:px-4 font-bold">Nominal</th>
                         <th class="py-2.5 sm:py-3 px-3 sm:px-4 font-bold">Status</th>
                         <th class="py-2.5 sm:py-3 px-3 sm:px-4 font-bold">Waktu bayar</th>
@@ -153,9 +153,9 @@
                                 <div>
                                     <div class="text-xs sm:text-sm font-normal text-slate-800">{{ $share->user->name }}</div>
                                     @if($share->user_id == $bill->payer_id)
-                                        <span class="text-[10px] sm:text-[11px] text-slate-500 font-normal block">Pembayar utama (talangan)</span>
+                                        <span class="text-[10px] sm:text-[11px] text-slate-500 font-normal block">Orang ganteng nalangin (Auto Bebas)</span>
                                     @elseif($isMyShare)
-                                        <span class="text-[10px] sm:text-[11px] text-slate-500 font-normal block">(Akun kamu)</span>
+                                        <span class="text-[10px] sm:text-[11px] text-slate-500 font-normal block">(Akun lu)</span>
                                     @endif
                                 </div>
                             </td>
@@ -165,15 +165,15 @@
                             <td class="py-3 px-3 sm:px-4">
                                 @if($share->status == 'approved')
                                     <span class="text-xs font-semibold text-slate-900">
-                                        Lunas
+                                        Lunas (Bebas Dosa)
                                     </span>
                                 @elseif($share->status == 'paid')
                                     <span class="text-xs font-semibold text-slate-700">
-                                        Menunggu konfirmasi {{ $bill->payer->name }}
+                                        Nunggu dicek {{ $bill->payer->name }}
                                     </span>
                                 @else
                                     <span class="text-xs font-medium text-slate-500">
-                                        Belum bayar
+                                        Belum bayar (Buruan!)
                                     </span>
                                 @endif
                             </td>
