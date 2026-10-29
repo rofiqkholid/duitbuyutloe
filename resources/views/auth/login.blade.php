@@ -78,8 +78,11 @@
                     </label>
                 </div>
 
-                <button type="submit" class="w-full py-2.5 px-4 rounded-full font-bold text-sm btn-primary">
-                    Masuk & Hadapi Kenyataan Tagihan
+                @php 
+                    $lockoutSec = max((int)session('lockout_seconds', 0), (int)($lockoutSeconds ?? 0)); 
+                @endphp
+                <button type="submit" id="submitLoginBtn" class="w-full py-2.5 px-4 rounded-full font-bold text-sm btn-primary cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed" {{ $lockoutSec > 0 ? 'disabled' : '' }}>
+                    <span id="btnSubmitText">Masuk & Hadapi Kenyataan Tagihan</span>
                 </button>
 
                 <div class="flex items-center my-4">
@@ -96,6 +99,41 @@
         </div>
 
     </div>
+
+    @if($lockoutSec > 0)
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            let timeLeft = {{ $lockoutSec }};
+            const btn = document.getElementById('submitLoginBtn');
+            const btnText = document.getElementById('btnSubmitText');
+            const nikInput = document.getElementById('nik');
+            const passInput = document.getElementById('password');
+
+            if (nikInput) nikInput.disabled = true;
+            if (passInput) passInput.disabled = true;
+
+            const updateButtonCountdown = () => {
+                if (timeLeft > 0) {
+                    btn.disabled = true;
+                    btnText.textContent = `Tunggu ${timeLeft} detik lagi...`;
+                    timeLeft--;
+                } else {
+                    clearInterval(countdownTimer);
+                    btn.disabled = false;
+                    btnText.textContent = 'Masuk & Hadapi Kenyataan Tagihan';
+                    if (nikInput) {
+                        nikInput.disabled = false;
+                        nikInput.focus();
+                    }
+                    if (passInput) passInput.disabled = false;
+                }
+            };
+
+            updateButtonCountdown();
+            const countdownTimer = setInterval(updateButtonCountdown, 1000);
+        });
+    </script>
+    @endif
 
 </body>
 </html>
