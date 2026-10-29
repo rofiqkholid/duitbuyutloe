@@ -107,6 +107,9 @@
 
         confirmBtn.addEventListener('click', function() {
             if (typeof pendingCallback === 'function') {
+                if (window.setButtonLoading) {
+                    window.setButtonLoading(confirmBtn);
+                }
                 const cb = pendingCallback;
                 pendingCallback = null;
                 cb();

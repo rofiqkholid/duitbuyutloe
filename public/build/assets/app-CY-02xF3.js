@@ -1,1 +1,0 @@
-import{a as i,c as e,i as o,V as s}from"./vendor-DZfaaDl2.js";window.axios=i;window.axios.defaults.headers.common["X-Requested-With"]="XMLHttpRequest";window.createIcons=e;window.lucideIcons=o;window.Viewer=s;document.addEventListener("DOMContentLoaded",()=>{e({icons:o})});

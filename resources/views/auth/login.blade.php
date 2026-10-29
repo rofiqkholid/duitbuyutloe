@@ -3,7 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - Duit Buyut Loe</title>
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    <link rel="icon" type="image/png" sizes="192x192" href="/favicon.png">
+    <link rel="apple-touch-icon" href="/favicon.png">
+    <title>Login</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body class="bg-slate-50 text-slate-800 min-h-screen flex items-center justify-center p-4 font-sans antialiased bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(99,102,241,0.15),rgba(255,255,255,0))]">
@@ -11,9 +14,9 @@
     <div class="max-w-md w-full space-y-6">
         <!-- Logo & Title -->
         <div class="text-center">
-            <div class="w-14 h-14 rounded-2xl btn-primary mx-auto flex items-center justify-center mb-3">
-                <i data-lucide="home" class="w-7 h-7 text-white"></i>
-            </div>
+            <img src="{{ asset('images/icon-circle.png') }}" 
+                 alt="Logo Duit Buyut Loe" 
+                 class="w-16 h-16 rounded-full border border-slate-200/80 shadow-md object-cover mx-auto mb-3 hover:scale-105 transition-transform duration-200">
             <h1 class="text-2xl font-semibold text-slate-900 tracking-tight">Duit Buyut Loe</h1>
             <p class="text-xs text-slate-500 mt-1">Masuk pake Nomor Induk Kewarasan (NIK), jangan pura-pura ga waras</p>
         </div>
@@ -78,6 +81,17 @@
                 <button type="submit" class="w-full py-2.5 px-4 rounded-full font-bold text-sm btn-primary">
                     Masuk & Hadapi Kenyataan Tagihan
                 </button>
+
+                <div class="flex items-center my-4">
+                    <div class="flex-grow border-t border-slate-200"></div>
+                    <span class="flex-shrink mx-3 text-xs text-slate-400">atau</span>
+                    <div class="flex-grow border-t border-slate-200"></div>
+                </div>
+
+                <a href="{{ route('dashboard') }}" class="w-full py-2.5 px-4 rounded-full font-semibold text-xs text-slate-700 bg-slate-100 hover:bg-slate-200 hover:text-slate-900 transition-all flex items-center justify-center gap-2">
+                    <i data-lucide="layout-dashboard" class="w-4 h-4 text-slate-600"></i>
+                    <span>Cuma Mau Kepoin Bon Orang (Masuk Mode Tamu)</span>
+                </a>
             </form>
         </div>
 

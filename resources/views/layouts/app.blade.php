@@ -7,9 +7,11 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
     <meta name="apple-mobile-web-app-title" content="Duit Buyut Loe">
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    <link rel="icon" type="image/png" sizes="192x192" href="/favicon.png">
     <link rel="manifest" href="/manifest.json">
-    <link rel="apple-touch-icon" href="/favicon.ico">
-    <title>@yield('title', 'Duit Buyut Loe') - Split Bill & Manajemen Faktur</title>
+    <link rel="apple-touch-icon" href="/favicon.png">
+    <title>@yield('title', 'Duit Buyut Loe')</title>
     <!-- Tailwind CSS, FontAwesome & Outfit Font compiled via Vite (Tanpa CDN) -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
@@ -19,9 +21,9 @@
     <header class="sticky top-0 z-50 backdrop-blur-xl bg-white/80 border-b border-slate-200 px-4 py-3 sm:px-6">
         <div class="max-w-7xl mx-auto flex flex-row items-center justify-between gap-3">
             <a href="{{ route('dashboard') }}" class="flex items-center gap-2.5 sm:gap-3 group">
-                <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl btn-primary flex items-center justify-center group-hover:scale-105 transition-transform duration-200">
-                    <i data-lucide="home" class="w-4 h-4 sm:w-5 sm:h-5 text-white"></i>
-                </div>
+                <img src="{{ asset('images/icon-circle.png') }}" 
+                     alt="Logo Duit Buyut Loe" 
+                     class="w-9 h-9 sm:w-10 sm:h-10 rounded-full border border-slate-200/80 shadow-sm object-cover group-hover:scale-105 transition-transform duration-200">
                 <div>
                     <h1 class="text-base sm:text-lg font-bold tracking-tight text-slate-900">
                         Duit Buyut Loe

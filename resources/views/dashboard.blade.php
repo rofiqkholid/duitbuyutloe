@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Dashboard Iuran')
+@section('title')
 
 @section('content')
 <!-- Welcome Banner (Light Mode) -->
@@ -317,9 +317,13 @@
                             </div>
                             <div class="text-xs text-slate-600 font-medium mt-0.5">
                                 <div class="flex flex-col sm:flex-row sm:items-center sm:gap-1.5">
-                                    <span class="truncate">{{ $pm ? $pm->masked_account_number : '-' }}</span>
+                                    <span class="truncate {{ Auth::check() ? 'select-all font-mono font-medium text-slate-800' : '' }}">
+                                        {{ $pm ? (Auth::check() ? $pm->account_number : $pm->masked_account_number) : '-' }}
+                                    </span>
                                     <span class="hidden sm:inline text-slate-400">&bull;</span>
-                                    <span class="truncate text-slate-500 text-[11px] sm:text-xs">a/n {{ $pm ? $pm->masked_account_name : 'XXX' }}</span>
+                                    <span class="truncate text-slate-500 text-[11px] sm:text-xs">
+                                        a/n {{ $pm ? (Auth::check() ? $pm->account_name : $pm->masked_account_name) : 'XXX' }}
+                                    </span>
                                 </div>
                             </div>
                         </div>
@@ -396,5 +400,105 @@
 
     </div>
 
+    <!-- CARD INFO UTILITAS BERSAMA (PDAM & TOKEN LISTRIK) -->
+    <div class="rounded-2xl bg-white border border-slate-200 p-4 sm:p-6 mt-6">
+        <h3 class="text-base font-bold text-slate-900 flex items-center gap-2 mb-1">
+            <i data-lucide="receipt" class="w-5 h-5 text-amber-500"></i>
+            <span>No. Tagihan & Meteran Bersama</span>
+        </h3>
+        <p class="text-xs text-slate-500 mb-4">
+            Nomor pelanggan / meteran untuk pembayaran keperluan kontrakan:
+        </p>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div class="flex items-center justify-between gap-3 p-3.5 rounded-xl bg-slate-50 border border-slate-200/80">
+                <div class="flex items-center gap-3 min-w-0">
+                    <div class="w-10 h-10 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center flex-shrink-0">
+                        <i data-lucide="droplets" class="w-5 h-5"></i>
+                    </div>
+                    <div class="min-w-0">
+                        <div class="flex items-center gap-2">
+                            <span class="font-bold text-sm text-slate-900 truncate">No. PDAM</span>
+                            <span class="text-[11px] font-medium text-slate-500 bg-white px-1.5 py-0.5 rounded border border-slate-200">Air PDAM</span>
+                        </div>
+                        <div id="pdamNumber" class="text-sm text-slate-700 mt-0.5 font-mono tracking-widest">
+                            0117 017 081
+                        </div>
+                    </div>
+                </div>
+                <button type="button" 
+                        onclick="copyToClipboard('0117017081', this)" 
+                        title="Salin No. PDAM"
+                        class="p-2 rounded-lg bg-white border border-slate-200 hover:bg-slate-100 text-slate-600 hover:text-slate-900 transition-colors flex items-center gap-1.5 flex-shrink-0 cursor-pointer">
+                    <span class="copy-default flex items-center gap-1.5">
+                        <i data-lucide="copy" class="w-4 h-4"></i>
+                        <span class="text-xs font-semibold hidden sm:inline">Salin</span>
+                    </span>
+                    <span class="copy-success hidden items-center gap-1.5 text-emerald-600 font-bold">
+                        <i data-lucide="check" class="w-4 h-4"></i>
+                        <span class="text-xs hidden sm:inline">Tersalin!</span>
+                    </span>
+                </button>
+            </div>
+
+            <div class="flex items-center justify-between gap-3 p-3.5 rounded-xl bg-slate-50 border border-slate-200/80">
+                <div class="flex items-center gap-3 min-w-0">
+                    <div class="w-10 h-10 rounded-full bg-amber-100 text-amber-600 flex items-center justify-center flex-shrink-0">
+                        <i data-lucide="zap" class="w-5 h-5"></i>
+                    </div>
+                    <div class="min-w-0">
+                        <div class="flex items-center gap-2">
+                            <span class="font-bold text-sm text-slate-900 truncate">No. Token Listrik</span>
+                            <span class="text-[11px] font-medium text-slate-500 bg-white px-1.5 py-0.5 rounded border border-slate-200">PLN Prabayar</span>
+                        </div>
+                        <div id="plnNumber" class="text-sm text-slate-700 mt-0.5 font-mono tracking-widest">
+                            5000 9693 073
+                        </div>
+                    </div>
+                </div>
+                <button type="button" 
+                        onclick="copyToClipboard('50009693073', this)" 
+                        title="Salin No. Token Listrik"
+                        class="p-2 rounded-lg bg-white border border-slate-200 hover:bg-slate-100 text-slate-600 hover:text-slate-900 transition-colors flex items-center gap-1.5 flex-shrink-0 cursor-pointer">
+                    <span class="copy-default flex items-center gap-1.5">
+                        <i data-lucide="copy" class="w-4 h-4"></i>
+                        <span class="text-xs font-semibold hidden sm:inline">Salin</span>
+                    </span>
+                    <span class="copy-success hidden items-center gap-1.5 text-emerald-600 font-bold">
+                        <i data-lucide="check" class="w-4 h-4"></i>
+                        <span class="text-xs hidden sm:inline">Tersalin!</span>
+                    </span>
+                </button>
+            </div>
+        </div>
+    </div>
+
 </div>
+
+<script>
+    function copyToClipboard(text, btn) {
+        navigator.clipboard.writeText(text).then(() => {
+            const defState = btn.querySelector('.copy-default');
+            const successState = btn.querySelector('.copy-success');
+            
+            if (defState && successState) {
+                defState.classList.add('hidden');
+                defState.classList.remove('flex');
+                successState.classList.remove('hidden');
+                successState.classList.add('flex');
+                btn.classList.add('border-emerald-300', 'bg-emerald-50');
+
+                setTimeout(() => {
+                    successState.classList.add('hidden');
+                    successState.classList.remove('flex');
+                    defState.classList.remove('hidden');
+                    defState.classList.add('flex');
+                    btn.classList.remove('border-emerald-300', 'bg-emerald-50');
+                }, 2000);
+            }
+        }).catch(err => {
+            console.error('Gagal menyalin: ', err);
+        });
+    }
+</script>
 @endsection
