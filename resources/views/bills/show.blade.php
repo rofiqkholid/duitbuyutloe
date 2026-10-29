@@ -1,8 +1,8 @@
-@extends('layouts.app')
+@extends('layouts.main')
 
 @section('title', $bill->title)
 
-@section('content')
+@section('main-content')
 <div class="space-y-6">
     <!-- Top Bar -->
     <div class="flex items-center gap-2.5 sm:gap-3">
@@ -131,12 +131,24 @@
 
                 <div class="pt-4 mt-4 border-t border-slate-200/70 flex items-center justify-between">
                     <div>
-                        <span class="text-xs text-slate-500 font-normal block">Porsi patungan per kepala:</span>
+                        <span class="text-xs text-slate-500 font-normal block">
+                            {{ strtolower($bill->type) === 'lainnya' ? 'Jumlah orang patungan:' : 'Porsi patungan per kepala:' }}
+                        </span>
                         <span class="text-lg font-normal text-slate-800">
-                            Rp {{ number_format($bill->share_amount, 0, ',', '.') }}
+                            @if(strtolower($bill->type) === 'lainnya')
+                                {{ $bill->shares->count() }} orang
+                            @else
+                                Rp {{ number_format($bill->share_amount, 0, ',', '.') }}
+                            @endif
                         </span>
                     </div>
-                    <span class="text-xs text-slate-400 font-normal">bagi 5 manusia</span>
+                    <span class="text-xs text-slate-400 font-normal">
+                        @if(strtolower($bill->type) === 'lainnya')
+                            nominal per orang beda-beda
+                        @else
+                            bagi {{ $bill->shares->count() }} manusia
+                        @endif
+                    </span>
                 </div>
             </div>
         </div>

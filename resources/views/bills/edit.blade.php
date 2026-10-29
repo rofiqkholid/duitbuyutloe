@@ -1,8 +1,8 @@
-@extends('layouts.app')
+@extends('layouts.main')
 
 @section('title', 'Edit Faktur Tagihan')
 
-@section('content')
+@section('main-content')
 <div class="space-y-6">
     <!-- Top Bar -->
     <div class="flex items-center gap-2.5 sm:gap-3">
@@ -96,6 +96,54 @@
                         Tanggal Faktur <span class="text-rose-600">*</span>
                     </label>
                     <input type="date" name="bill_date" value="{{ old('bill_date', \Carbon\Carbon::parse($bill->bill_date)->format('Y-m-d')) }}" required class="w-full h-11 px-3.5 rounded-xl bg-white border border-slate-300 text-slate-800 text-sm focus:outline-none focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600">
+                </div>
+            </div>
+
+            <!-- Bagian Pemilihan User Khusus untuk Tipe "Lainnya" (Titip Makan / Utang Pribadi) -->
+            @php
+                $billShareUserIds = $bill->shares->pluck('user_id')->toArray();
+                $billShareAmounts = $bill->shares->pluck('amount', 'user_id')->toArray();
+                $userOptions = $users->reject(function($u) use ($currentUser) {
+                    return $u->id == $currentUser->id;
+                })->map(function($u) {
+                    return [
+                        'id' => $u->id,
+                        'name' => $u->name,
+                        'desc' => 'Penghuni',
+                    ];
+                })->values()->toArray();
+            @endphp
+            <div id="customUsersSection" class="hidden space-y-4 pt-2">
+                <!-- Dropdown Custom-Select-Multy -->
+                <div>
+                    <div class="flex items-center justify-between mb-2">
+                        <label class="block text-sm font-bold text-slate-800">
+                            Orang yang titip / berutang <span class="text-rose-600">*</span>
+                        </label>
+                        <span class="text-xs text-slate-500 font-normal">
+                            <span id="selectedCountText">0</span> orang dipilih
+                        </span>
+                    </div>
+
+                    <x-custom-select-multy
+                        name="split_users"
+                        id="split_users_edit_select"
+                        placeholder="Pilih siapa saja yang titip / berutang..."
+                        :options="$userOptions"
+                        :selected="old('split_users', $billShareUserIds)"
+                    />
+                </div>
+
+                <!-- Input Nominal Manual Tiap User Terpilih Muncul Di Bawahnya -->
+                <div id="userAmountList" class="space-y-3">
+                    <label class="block text-sm font-bold text-slate-800">
+                        Rincian hutang per orang
+                    </label>
+                    <div id="userAmountInputs" class="space-y-2.5">
+                        <p id="emptyUserNotice" class="text-xs text-slate-400 italic">
+                            Belum ada orang yang dipilih. Silakan pilih orang lewat dropdown di atas.
+                        </p>
+                    </div>
                 </div>
             </div>
 
@@ -205,10 +253,46 @@
     const displayInput = document.getElementById('total_amount_display');
     const hiddenInput = document.getElementById('total_amount');
     const previewEl = document.getElementById('splitPreview');
+    const typeInput = document.getElementById('select_type_input') || document.querySelector('input[name="type"]');
+    const customUsersSection = document.getElementById('customUsersSection');
+    const selectedCountText = document.getElementById('selectedCountText');
+    const userAmountInputs = document.getElementById('userAmountInputs');
+    const emptyUserNotice = document.getElementById('emptyUserNotice');
+    const userCheckboxes = document.querySelectorAll('.user-select-checkbox');
 
     function formatRupiah(val) {
         if (!val) return '';
         return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+    }
+
+    function isLainnyaSelected() {
+        return typeInput && typeInput.value.toLowerCase() === 'lainnya';
+    }
+
+    function syncTypeMode() {
+        const isLainnya = isLainnyaSelected();
+        if (isLainnya) {
+            customUsersSection.classList.remove('hidden');
+            previewEl.classList.add('hidden');
+            displayInput.readOnly = true;
+            displayInput.classList.remove('bg-white', 'focus:border-indigo-600', 'focus:ring-1', 'focus:ring-indigo-600');
+            displayInput.classList.add('bg-slate-100', 'border-slate-200', 'text-slate-500', 'cursor-not-allowed', 'select-none');
+            displayInput.placeholder = 'Otomatis terisi dari rincian di bawah';
+            syncCustomTotalToTotalAmount();
+        } else {
+            customUsersSection.classList.add('hidden');
+            previewEl.classList.remove('hidden');
+            displayInput.readOnly = false;
+            displayInput.classList.remove('bg-slate-100', 'border-slate-200', 'text-slate-500', 'cursor-not-allowed', 'select-none');
+            displayInput.classList.add('bg-white', 'focus:border-indigo-600', 'focus:ring-1', 'focus:ring-indigo-600');
+            displayInput.placeholder = '100.000';
+            updateCalculations();
+        }
+    }
+
+    if (typeInput) {
+        typeInput.addEventListener('change', syncTypeMode);
+        typeInput.addEventListener('input', syncTypeMode);
     }
 
     function updateCalculations() {
@@ -228,6 +312,94 @@
         displayInput.value = hiddenInput.value;
         updateCalculations();
     }
+
+    // Sinkronisasi otomatis total nominal hutang orang-orang langsung ke Total Faktur
+    function syncCustomTotalToTotalAmount() {
+        if (!isLainnyaSelected()) return;
+
+        let sum = 0;
+        document.querySelectorAll('.user-amount-input').forEach(inp => {
+            const val = parseInt(inp.value.replace(/\D/g, ''), 10) || 0;
+            sum += val;
+        });
+
+        hiddenInput.value = sum > 0 ? sum : '';
+        displayInput.value = sum > 0 ? formatRupiah(sum) : '';
+    }
+
+    // Simpan data nilai awal dari database / server
+    const initialSharesMap = @json($billShareAmounts);
+
+    function updateUserRowsFromMultiSelect(selectedUsers) {
+        selectedCountText.textContent = selectedUsers.length;
+
+        const existingValues = {};
+        document.querySelectorAll('.user-amount-input').forEach(inp => {
+            const uid = inp.dataset.userId;
+            existingValues[uid] = inp.value;
+        });
+
+        userAmountInputs.innerHTML = '';
+
+        if (selectedUsers.length === 0) {
+            userAmountInputs.appendChild(emptyUserNotice);
+            emptyUserNotice.classList.remove('hidden');
+        } else {
+            emptyUserNotice.classList.add('hidden');
+
+            selectedUsers.forEach(user => {
+                const userId = user.id;
+                const userName = user.name;
+                const dbVal = initialSharesMap[userId] ? formatRupiah(Math.round(initialSharesMap[userId])) : '';
+                const prevVal = existingValues[userId] !== undefined ? existingValues[userId] : dbVal;
+
+                const row = document.createElement('div');
+                row.className = 'flex items-center gap-2.5 sm:gap-4 w-full';
+                row.innerHTML = `
+                    <div class="h-11 w-1/2 min-w-0 flex items-center gap-2 px-3 sm:px-3.5 rounded-xl bg-white border border-slate-200">
+                        <div class="w-6 h-6 rounded-full bg-slate-100 border border-slate-200 text-slate-700 font-bold text-xs flex items-center justify-center flex-shrink-0">
+                            ${userName.substring(0, 1)}
+                        </div>
+                        <span class="text-xs sm:text-sm font-medium text-slate-800 truncate">${userName}</span>
+                    </div>
+                    <div class="relative w-1/2 min-w-0">
+                        <span class="absolute left-3.5 top-3 text-xs text-slate-400 font-medium pointer-events-none">Rp</span>
+                        <input 
+                            type="text" 
+                            name="custom_amounts[${userId}]" 
+                            data-user-id="${userId}"
+                            value="${prevVal}" 
+                            placeholder="0" 
+                            inputmode="numeric"
+                            class="user-amount-input w-full h-11 pl-10 pr-3.5 rounded-xl bg-white border border-slate-300 text-left text-xs sm:text-sm font-medium text-slate-900 focus:outline-none focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600"
+                            required
+                        >
+                    </div>
+                `;
+                userAmountInputs.appendChild(row);
+            });
+
+            document.querySelectorAll('.user-amount-input').forEach(inp => {
+                inp.addEventListener('input', function () {
+                    const rawDigits = this.value.replace(/\D/g, '');
+                    const numericVal = parseInt(rawDigits, 10) || 0;
+                    this.value = numericVal > 0 ? formatRupiah(numericVal) : '';
+                    syncCustomTotalToTotalAmount();
+                });
+            });
+        }
+
+        syncCustomTotalToTotalAmount();
+    }
+
+    // Tangkap event perubahan pilihan dari x-custom-select-multy
+    document.addEventListener('multiselect-change', function (e) {
+        if (e.target.closest('#customUsersSection')) {
+            updateUserRowsFromMultiSelect(e.detail.selected);
+        }
+    });
+
+    syncTypeMode();
 
     // Handler Upload Faktur & Progress Bar 0 - 100%
     const fileInput = document.getElementById('invoice_image');

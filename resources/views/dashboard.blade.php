@@ -1,8 +1,8 @@
-@extends('layouts.app')
+@extends('layouts.main')
 
 @section('title')
 
-@section('content')
+@section('main-content')
 <!-- Welcome Banner (Light Mode) -->
 <div class="relative overflow-hidden rounded-2xl bg-white border-primary-gradient p-5 sm:p-8 mb-6 sm:mb-8">
     <div class="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-5 sm:gap-6">
@@ -243,7 +243,7 @@
                         <th class="py-2.5 sm:py-3 px-3 sm:px-4 font-bold">Faktur</th>
                         <th class="py-2.5 sm:py-3 px-3 sm:px-4 font-bold">Ditalangi</th>
                         <th class="py-2.5 sm:py-3 px-3 sm:px-4 font-bold">Total</th>
-                        <th class="py-2.5 sm:py-3 px-3 sm:px-4 font-bold">Bagi 5 orang</th>
+                        <th class="py-2.5 sm:py-3 px-3 sm:px-4 font-bold">Porsi per orang</th>
                         <th class="py-2.5 sm:py-3 px-3 sm:px-4 font-bold">Tanggal</th>
                         <th class="py-2.5 sm:py-3 px-3 sm:px-4 font-bold">Detail</th>
                     </tr>
@@ -266,8 +266,12 @@
                                 Rp {{ number_format($bill->total_amount, 0, ',', '.') }}
                             </td>
                             <td class="py-3 px-3 sm:px-4 font-semibold text-slate-900">
-                                Rp {{ number_format($bill->share_amount, 0, ',', '.') }}
-                                <span class="text-[11px] sm:text-xs text-slate-500 font-normal">/orang</span>
+                                @if(strtolower($bill->type) === 'lainnya')
+                                    <span class="text-xs font-medium text-slate-700">{{ $bill->shares->count() }} orang (nominal beda)</span>
+                                @else
+                                    Rp {{ number_format($bill->share_amount, 0, ',', '.') }}
+                                    <span class="text-[11px] sm:text-xs text-slate-500 font-normal">/orang</span>
+                                @endif
                             </td>
                             <td class="py-3 px-3 sm:px-4 text-xs text-slate-500">
                                 {{ \Carbon\Carbon::parse($bill->bill_date)->format('d M Y') }}

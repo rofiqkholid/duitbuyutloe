@@ -106,13 +106,21 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 if (isButtonLike && !link.hasAttribute('data-no-loading')) {
                     const textLower = link.textContent.trim().toLowerCase();
-                    // Tombol aksi ringkas (Rincian, Edit bon, Bukti, Batal, dll) hanya menampilkan spinner tanpa teks
+                    // Deteksi apakah tombol kembali (icon arrow-left atau tombol back)
+                    const isBackBtn = link.querySelector('.fa-arrow-left, .fa-arrow-left-long, [data-lucide="arrow-left"]') ||
+                                      link.classList.contains('back-button') ||
+                                      link.getAttribute('title')?.toLowerCase().includes('kembali');
+
+                    const isMobileScreen = window.innerWidth < 640;
+
+                    // Tombol aksi ringkas (Rincian, Edit bon, Bukti, Batal, dll, atau tombol back di mobile) hanya menampilkan spinner tanpa teks
                     const isSpinnerOnly = link.matches('td a') || 
                                           textLower === 'rincian' || 
                                           textLower.startsWith('edit') || 
                                           textLower === 'bukti' || 
                                           textLower === 'batal' ||
-                                          textLower === 'gajadi deh';
+                                          textLower === 'gajadi deh' ||
+                                          (isBackBtn && (isMobileScreen || textLower === '' || textLower === 'dashboard'));
 
                     window.setButtonLoading(link, isSpinnerOnly ? '' : (link.textContent.trim() || 'Memuat...'));
                 }

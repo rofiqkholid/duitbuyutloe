@@ -1,8 +1,8 @@
-@extends('layouts.app')
+@extends('layouts.main')
 
 @section('title', 'Profil Pengguna & Rekening')
 
-@section('content')
+@section('main-content')
 <div class="space-y-6">
     <!-- Header -->
     <div class="flex items-center justify-between">

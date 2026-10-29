@@ -44,10 +44,11 @@ class BillController extends Controller
             'description' => 'nullable|string',
             'invoice_image' => 'nullable|file|mimes:jpeg,png,jpg,webp,pdf|max:2048',
             'split_users' => 'nullable|array',
+            'custom_amounts' => 'nullable|array',
         ], [
             'invoice_image.max' => 'Ukuran file faktur maksimal 2MB.',
             'invoice_image.mimes' => 'Format file harus berupa gambar (JPG, PNG, WEBP) atau PDF.',
-            'invoice_image.uploaded' => 'File gagal diunggah karena melebihi batas upload server (maksimal 2MB).',
+            'invoice_image.uploaded' => 'File gagal diunggah karena melebihi batas upload server (maksimal 2MB)',
         ]);
 
         $invoicePath = null;
@@ -62,6 +63,7 @@ class BillController extends Controller
             'wifi' => 'Wifi / Internet',
             'listrik' => 'Listrik / PLN',
             'air' => 'Air PDAM',
+            'sampah' => 'Uang Sampah',
             'galon' => 'Galon / Gas',
             'kebersihan' => 'Kebersihan',
             'lainnya' => 'Lainnya',
@@ -86,26 +88,49 @@ class BillController extends Controller
         ]);
 
         $allUsers = User::all();
-        $selectedUserIds = $request->split_users ?: $allUsers->pluck('id')->toArray();
-        $userCount = count($selectedUserIds);
+        $isLainnya = strtolower($typeValue) === 'lainnya';
 
-        if ($userCount > 0) {
-            $splitAmount = round($bill->total_amount / $userCount, 2);
+        if ($isLainnya && $request->has('split_users')) {
+            $selectedUserIds = (array) $request->split_users;
+            $customAmounts = $request->input('custom_amounts', []);
 
             foreach ($selectedUserIds as $userId) {
                 $isPayer = ($userId == $bill->payer_id);
+                // Cek nominal manual dari input
+                $rawAmount = isset($customAmounts[$userId]) ? str_replace(['.', ','], '', $customAmounts[$userId]) : 0;
+                $userAmount = is_numeric($rawAmount) && $rawAmount > 0 ? (float) $rawAmount : 0;
+
                 BillShare::create([
                     'bill_id' => $bill->id,
                     'user_id' => $userId,
-                    'amount' => $splitAmount,
+                    'amount' => $userAmount,
                     'status' => $isPayer ? 'approved' : 'unpaid',
                     'paid_at' => $isPayer ? now() : null,
                     'notes' => $isPayer ? 'Pembayar tagihan utama (talangan)' : null,
                 ]);
             }
+        } else {
+            $selectedUserIds = $request->split_users ?: $allUsers->pluck('id')->toArray();
+            $userCount = count($selectedUserIds);
+
+            if ($userCount > 0) {
+                $splitAmount = round($bill->total_amount / $userCount, 2);
+
+                foreach ($selectedUserIds as $userId) {
+                    $isPayer = ($userId == $bill->payer_id);
+                    BillShare::create([
+                        'bill_id' => $bill->id,
+                        'user_id' => $userId,
+                        'amount' => $splitAmount,
+                        'status' => $isPayer ? 'approved' : 'unpaid',
+                        'paid_at' => $isPayer ? now() : null,
+                        'notes' => $isPayer ? 'Pembayar tagihan utama (talangan)' : null,
+                    ]);
+                }
+            }
         }
 
-        return redirect()->route('bills.show', $bill->id)->with('success', 'Faktur tagihan berhasil ditambahkan & otomatis dibagi rata!');
+        return redirect()->route('bills.show', $bill->id)->with('success', 'Faktur tagihan berhasil ditambahkan!');
     }
 
     public function show($id)
@@ -126,8 +151,9 @@ class BillController extends Controller
         }
 
         $currentUser = Auth::user();
+        $users = User::all();
 
-        return view('bills.edit', compact('bill', 'currentUser'));
+        return view('bills.edit', compact('bill', 'currentUser', 'users'));
     }
 
     public function update(Request $request, $id)
@@ -147,6 +173,8 @@ class BillController extends Controller
             'due_date' => 'nullable|date',
             'description' => 'nullable|string',
             'invoice_image' => 'nullable|file|mimes:jpeg,png,jpg,webp,pdf|max:2048',
+            'split_users' => 'nullable|array',
+            'custom_amounts' => 'nullable|array',
         ], [
             'invoice_image.max' => 'Ukuran file faktur maksimal 2MB.',
             'invoice_image.mimes' => 'Format file harus berupa gambar (JPG, PNG, WEBP) atau PDF.',
@@ -189,11 +217,41 @@ class BillController extends Controller
             'due_date' => $request->due_date,
         ]);
 
-        // Recalculate split shares amount
-        $sharesCount = $bill->shares()->count();
-        if ($sharesCount > 0) {
-            $splitAmount = round($bill->total_amount / $sharesCount, 2);
-            $bill->shares()->update(['amount' => $splitAmount]);
+        // Recalculate or update split shares
+        $isLainnya = strtolower($typeValue) === 'lainnya';
+
+        if ($isLainnya && $request->has('split_users')) {
+            $selectedUserIds = (array) $request->split_users;
+            $customAmounts = $request->input('custom_amounts', []);
+
+            // Hapus share user yang tidak terpilih
+            $bill->shares()->whereNotIn('user_id', $selectedUserIds)->delete();
+
+            foreach ($selectedUserIds as $userId) {
+                $isPayer = ($userId == $bill->payer_id);
+                $rawAmount = isset($customAmounts[$userId]) ? str_replace(['.', ','], '', $customAmounts[$userId]) : 0;
+                $userAmount = is_numeric($rawAmount) && $rawAmount > 0 ? (float) $rawAmount : 0;
+
+                $existingShare = $bill->shares()->where('user_id', $userId)->first();
+                if ($existingShare) {
+                    $existingShare->update(['amount' => $userAmount]);
+                } else {
+                    BillShare::create([
+                        'bill_id' => $bill->id,
+                        'user_id' => $userId,
+                        'amount' => $userAmount,
+                        'status' => $isPayer ? 'approved' : 'unpaid',
+                        'paid_at' => $isPayer ? now() : null,
+                        'notes' => $isPayer ? 'Pembayar tagihan utama (talangan)' : null,
+                    ]);
+                }
+            }
+        } else {
+            $sharesCount = $bill->shares()->count();
+            if ($sharesCount > 0) {
+                $splitAmount = round($bill->total_amount / $sharesCount, 2);
+                $bill->shares()->update(['amount' => $splitAmount]);
+            }
         }
 
         return redirect()->route('bills.show', $bill->id)->with('success', 'Faktur tagihan berhasil diperbarui!');

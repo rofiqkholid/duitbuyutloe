@@ -1,8 +1,8 @@
-@extends('layouts.app')
+@extends('layouts.main')
 
 @section('title', 'Semua Faktur Tagihan')
 
-@section('content')
+@section('main-content')
 <div class="space-y-6">
     <!-- Top Bar -->
     <div class="flex items-center gap-2.5 sm:gap-3">
@@ -37,7 +37,7 @@
                         <th class="py-2.5 sm:py-3 px-3 sm:px-4 font-bold">Faktur</th>
                         <th class="py-2.5 sm:py-3 px-3 sm:px-4 font-bold">Ditalangi</th>
                         <th class="py-2.5 sm:py-3 px-3 sm:px-4 font-bold">Total</th>
-                        <th class="py-2.5 sm:py-3 px-3 sm:px-4 font-bold">Bagi 5 orang</th>
+                        <th class="py-2.5 sm:py-3 px-3 sm:px-4 font-bold">Porsi per orang</th>
                         <th class="py-2.5 sm:py-3 px-3 sm:px-4 font-bold">Status</th>
                         <th class="py-2.5 sm:py-3 px-3 sm:px-4 font-bold">Tanggal</th>
                         <th class="py-2.5 sm:py-3 px-3 sm:px-4 font-bold">Detail</th>
@@ -65,8 +65,12 @@
                                 Rp {{ number_format($bill->total_amount, 0, ',', '.') }}
                             </td>
                             <td class="py-3 px-3 sm:px-4 font-semibold text-slate-900">
-                                Rp {{ number_format($bill->share_amount, 0, ',', '.') }}
-                                <span class="text-[11px] sm:text-xs text-slate-500 font-normal">/orang</span>
+                                @if(strtolower($bill->type) === 'lainnya')
+                                    <span class="text-xs font-medium text-slate-700">{{ $totalCount }} orang (nominal beda)</span>
+                                @else
+                                    Rp {{ number_format($bill->share_amount, 0, ',', '.') }}
+                                    <span class="text-[11px] sm:text-xs text-slate-500 font-normal">/orang</span>
+                                @endif
                             </td>
                             <td class="py-3 px-3 sm:px-4 text-xs font-medium text-slate-700">
                                 {{ $paidCount }}/{{ $totalCount }} lunas
