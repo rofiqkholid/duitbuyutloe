@@ -8,6 +8,7 @@
     <link rel="apple-touch-icon" href="/favicon.png">
     <title>Login</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+    <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
 </head>
 <body class="bg-slate-50 text-slate-800 min-h-screen flex items-center justify-center p-4 font-sans antialiased bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(99,102,241,0.15),rgba(255,255,255,0))]">
 
@@ -77,6 +78,10 @@
                         Inget gue (Biar ga bolak-balik login)
                     </label>
                 </div>
+
+                @if(config('services.turnstile.site_key'))
+                    <div class="cf-turnstile my-2 flex justify-center" data-sitekey="{{ config('services.turnstile.site_key') }}" data-theme="light"></div>
+                @endif
 
                 @php 
                     $lockoutSec = max((int)session('lockout_seconds', 0), (int)($lockoutSeconds ?? 0)); 

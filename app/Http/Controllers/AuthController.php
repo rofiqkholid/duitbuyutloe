@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Str;
 
@@ -52,6 +53,33 @@ class AuthController extends Controller
             'nik.required' => 'Nomor Induk Kewarasan (NIK) wajib diisi',
             'password.required' => 'Password wajib diisi',
         ]);
+
+        // Verifikasi Cloudflare Turnstile jika secret key tersedia
+        $turnstileSecret = config('services.turnstile.secret_key');
+        if ($turnstileSecret) {
+            $turnstileResponse = $request->input('cf-turnstile-response');
+            if (!$turnstileResponse) {
+                return back()->withErrors([
+                    'nik' => 'Verifikasi Cloudflare Turnstile wajib dicentang.',
+                ])->onlyInput('nik');
+            }
+
+            try {
+                $verify = Http::asForm()->timeout(5)->post('https://challenges.cloudflare.com/turnstile/v0/siteverify', [
+                    'secret' => $turnstileSecret,
+                    'response' => $turnstileResponse,
+                    'remoteip' => $request->ip(),
+                ]);
+
+                if (!$verify->json('success')) {
+                    return back()->withErrors([
+                        'nik' => 'Verifikasi keamanan bot gagal. Silakan coba lagi.',
+                    ])->onlyInput('nik');
+                }
+            } catch (\Exception $e) {
+                // Jangan blokir user jika server Cloudflare error / unreachable
+            }
+        }
 
         // Coba autentikasi
         if (Auth::attempt(['nik' => strtoupper(trim($credentials['nik'])), 'password' => $credentials['password']], $request->filled('remember'))) {
