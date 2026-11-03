@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="id" class="h-full overflow-hidden">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <link rel="icon" type="image/x-icon" href="/favicon.ico">
     <link rel="icon" type="image/png" sizes="192x192" href="/favicon.png">
     <link rel="apple-touch-icon" href="/favicon.png">
@@ -10,46 +10,27 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
 </head>
-<body class="bg-slate-50 text-slate-800 min-h-screen flex items-center justify-center p-4 font-sans antialiased bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(99,102,241,0.15),rgba(255,255,255,0))]">
+<body class="bg-slate-50 text-slate-800 h-screen h-dvh flex items-center justify-center p-4 font-sans antialiased overflow-hidden overscroll-none bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(99,102,241,0.15),rgba(255,255,255,0))]">
 
-    <div class="max-w-md w-full space-y-6">
+    @include('partials.alert')
+
+    <div class="max-w-md w-full space-y-4 sm:space-y-6 my-auto">
         <!-- Logo & Title -->
         <div class="text-center">
             <img src="{{ asset('images/icon-circle.png') }}" 
                  alt="Logo Duit Buyut Loe" 
-                 class="w-16 h-16 rounded-full border border-slate-200/80 shadow-md object-cover mx-auto mb-3 hover:scale-105 transition-transform duration-200">
-            <h1 class="text-2xl font-semibold text-slate-900 tracking-tight">Duit Buyut Loe</h1>
+                 class="w-16 h-16 rounded-full border border-slate-200/80 shadow-md object-cover mx-auto mb-2.5 hover:scale-105 transition-transform duration-200">
+            <h1 class="text-2xl font-bold text-slate-900 tracking-tight">Duit Buyut Loe</h1>
             <p class="text-xs text-slate-500 mt-1">Masuk pake Nomor Induk Kewarasan (NIK), jangan pura-pura ga waras</p>
         </div>
 
-        @if(session('success'))
-            <div class="flex items-center gap-2 p-3.5 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs">
-                <i data-lucide="check-circle-2" class="w-4 h-4 text-emerald-600 flex-shrink-0"></i>
-                <div class="font-medium">{{ session('success') }}</div>
-            </div>
-        @endif
-
-        @if($errors->any())
-            <div class="p-3.5 rounded-xl bg-rose-50 border border-rose-200 text-rose-800 text-xs">
-                <div class="flex items-center gap-2 font-bold mb-1">
-                    <i data-lucide="alert-circle" class="w-4 h-4 text-rose-600 flex-shrink-0"></i>
-                    Gagal Masuk (Salah NIK atau Password lu amnesia)
-                </div>
-                <ul class="list-disc ml-5 space-y-0.5">
-                    @foreach($errors->all() as $err)
-                        <li>{{ $err }}</li>
-                    @endforeach
-                </ul>
-            </div>
-        @endif
-
         <!-- Card Login Form -->
-        <div class="rounded-2xl bg-white border border-slate-200 p-6 sm:p-8">
-            <form action="{{ route('login') }}" method="POST" class="space-y-4">
+        <div class="rounded-2xl bg-white border border-slate-200 p-6 sm:p-8 shadow-xs">
+            <form action="{{ route('login') }}" method="POST" class="space-y-3.5 sm:space-y-4">
                 @csrf
 
                 <div>
-                    <label for="nik" class="block text-xs font-medium text-slate-700 mb-1.5">
+                    <label for="nik" class="block text-xs font-semibold text-slate-700 mb-1.5">
                         Nomor Induk Kewarasan (NIK)
                     </label>
                     <div class="relative">
@@ -61,7 +42,7 @@
                 </div>
 
                 <div>
-                    <label for="password" class="block text-xs font-medium text-slate-700 mb-1.5">
+                    <label for="password" class="block text-xs font-semibold text-slate-700 mb-1.5">
                         Password
                     </label>
                     <div class="relative">
@@ -72,7 +53,7 @@
                     </div>
                 </div>
 
-                <div class="flex items-center justify-between text-xs pt-1">
+                <div class="flex items-center justify-between text-xs pt-0.5">
                     <label class="flex items-center gap-2 cursor-pointer text-slate-600">
                         <input type="checkbox" name="remember" class="rounded border-slate-300 text-indigo-600 focus:ring-indigo-500">
                         Inget gue (Biar ga bolak-balik login)
@@ -80,7 +61,7 @@
                 </div>
 
                 @if(config('services.turnstile.site_key'))
-                    <div class="cf-turnstile my-2 flex justify-center" data-sitekey="{{ config('services.turnstile.site_key') }}" data-theme="light"></div>
+                    <div class="cf-turnstile my-1.5 sm:my-2 flex justify-center" data-sitekey="{{ config('services.turnstile.site_key') }}" data-theme="light"></div>
                 @endif
 
                 @php 
@@ -90,7 +71,7 @@
                     <span id="btnSubmitText">Masuk & Hadapi Kenyataan Tagihan</span>
                 </button>
 
-                <div class="flex items-center my-4">
+                <div class="flex items-center my-3 sm:my-4">
                     <div class="flex-grow border-t border-slate-200"></div>
                     <span class="flex-shrink mx-3 text-xs text-slate-400">atau</span>
                     <div class="flex-grow border-t border-slate-200"></div>

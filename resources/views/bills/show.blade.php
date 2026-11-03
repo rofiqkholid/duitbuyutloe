@@ -70,29 +70,29 @@
                     <div class="text-base font-medium text-slate-800">{{ $bill->payer->name }}</div>
                     @php $pm = $bill->payer->paymentMethods->first(); @endphp
                     @if($pm)
-                        <div class="mt-1 flex items-center justify-between gap-2">
-                            <div>
-                                <div class="text-xs text-slate-700 font-medium flex items-center gap-1.5">
-                                    <span>{{ $pm->type }}:</span>
-                                    <span class="font-mono text-slate-900 font-semibold select-all">{{ $pm->account_number }}</span>
-                                </div>
+                        <div class="mt-1.5 space-y-1">
+                            <div class="text-xs text-slate-700 font-medium flex items-center gap-1.5 flex-wrap">
+                                <span>{{ $pm->type }}:</span>
+                                <span class="font-mono text-slate-900 font-semibold select-all">{{ $pm->account_number }}</span>
+                            </div>
+                            <div class="flex items-center justify-between gap-2">
                                 <div class="text-xs text-slate-500 font-normal">
                                     a/n {{ $pm->account_name }}
                                 </div>
+                                <button type="button" 
+                                        onclick="copyAccountNumber('{{ $pm->account_number }}', this)" 
+                                        title="Salin No. Rek"
+                                        class="px-2.5 py-1 rounded-lg bg-white border border-slate-200 hover:bg-slate-100 text-slate-600 hover:text-slate-900 transition-colors flex items-center gap-1.5 flex-shrink-0 cursor-pointer">
+                                    <span class="copy-default flex items-center gap-1.5">
+                                        <i data-lucide="copy" class="w-3.5 h-3.5"></i>
+                                        <span class="text-xs font-semibold">Salin<span class="hidden sm:inline"> No. Rek</span></span>
+                                    </span>
+                                    <span class="copy-success hidden items-center gap-1.5 text-emerald-600 font-bold">
+                                        <i data-lucide="check" class="w-3.5 h-3.5"></i>
+                                        <span class="text-xs">Tersalin!</span>
+                                    </span>
+                                </button>
                             </div>
-                            <button type="button" 
-                                    onclick="copyAccountNumber('{{ $pm->account_number }}', this)" 
-                                    title="Salin No. Rek"
-                                    class="px-2.5 py-1.5 rounded-lg bg-white border border-slate-200 hover:bg-slate-100 text-slate-600 hover:text-slate-900 transition-colors flex items-center gap-1.5 flex-shrink-0 cursor-pointer">
-                                <span class="copy-default flex items-center gap-1.5">
-                                    <i data-lucide="copy" class="w-3.5 h-3.5"></i>
-                                    <span class="text-xs font-semibold">Salin<span class="hidden sm:inline"> No. Rek</span></span>
-                                </span>
-                                <span class="copy-success hidden items-center gap-1.5 text-emerald-600 font-bold">
-                                    <i data-lucide="check" class="w-3.5 h-3.5"></i>
-                                    <span class="text-xs">Tersalin!</span>
-                                </span>
-                            </button>
                         </div>
                     @else
                         <div class="text-xs text-slate-500 font-normal mt-1">

@@ -30,12 +30,12 @@
                 <i class="fa-solid fa-triangle-exclamation text-sm"></i>
             </div>
             <div class="text-xs font-semibold text-slate-800 pr-2">
-                <div class="font-bold text-rose-700 mb-1">Periksa kembali data Anda:</div>
-                <ul class="list-disc list-inside space-y-0.5 text-slate-600 font-normal">
+                <div class="font-bold text-rose-700 mb-0.5">Periksa kembali data Anda:</div>
+                <div class="space-y-0.5 text-slate-600 font-normal">
                     @foreach($errors->all() as $error)
-                        <li>{{ $error }}</li>
+                        <div>{{ $error }}</div>
                     @endforeach
-                </ul>
+                </div>
             </div>
             <button type="button" onclick="hideToastNotification()" class="text-slate-400 hover:text-slate-600 p-1 ml-auto">
                 <i class="fa-solid fa-xmark text-xs"></i>
