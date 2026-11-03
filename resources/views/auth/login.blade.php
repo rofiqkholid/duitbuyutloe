@@ -79,7 +79,7 @@
 
                 <a href="{{ route('dashboard') }}" class="w-full py-2.5 px-4 rounded-full font-semibold text-xs text-slate-700 bg-slate-100 hover:bg-slate-200 hover:text-slate-900 transition-all flex items-center justify-center gap-2">
                     <i data-lucide="layout-dashboard" class="w-4 h-4 text-slate-600"></i>
-                    <span>Cuma Mau Kepoin Bon Orang (Masuk Mode Tamu)</span>
+                    <span>Masuk Mode Tamu</span>
                 </a>
             </form>
         </div>

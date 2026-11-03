@@ -129,7 +129,7 @@
             </div>
         </div>
         <div class="text-xl sm:text-3xl font-semibold text-slate-900">
-            Ada 5 Pangeran
+            Ada 5 Oknum
         </div>
         <p class="text-[11px] sm:text-xs text-slate-500 mt-1 sm:mt-2 font-medium">Patungan 20% rata, gaada ceritanya numpang gratis</p>
     </div>
