@@ -8,6 +8,6 @@ self.addEventListener('activate', (event) => {
 });
 
 self.addEventListener('fetch', (event) => {
-    // Pass-through default fetch
-    event.respondWith(fetch(event.request).catch(() => {}));
+    // Biarkan browser handle fetch secara native
 });
+
