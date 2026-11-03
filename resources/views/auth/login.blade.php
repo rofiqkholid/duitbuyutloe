@@ -10,16 +10,16 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
 </head>
-<body class="bg-slate-50 text-slate-800 h-screen h-dvh flex items-center justify-center p-4 font-sans antialiased overflow-hidden overscroll-none bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(99,102,241,0.15),rgba(255,255,255,0))]">
+<body class="bg-slate-50 text-slate-800 h-screen h-dvh flex items-center justify-center p-4 pb-14 sm:pb-20 font-sans antialiased overflow-hidden overscroll-none bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(99,102,241,0.15),rgba(255,255,255,0))]">
 
     @include('partials.alert')
 
-    <div class="max-w-md w-full space-y-4 sm:space-y-6 my-auto">
+    <div class="max-w-md w-full space-y-4 sm:space-y-6 -translate-y-8 sm:-translate-y-12">
         <!-- Logo & Title -->
         <div class="text-center">
             <img src="{{ asset('images/icon-circle.png') }}" 
                  alt="Logo Duit Buyut Loe" 
-                 class="w-16 h-16 rounded-full border border-slate-200/80 shadow-md object-cover mx-auto mb-2.5 hover:scale-105 transition-transform duration-200">
+                 class="w-20 h-20 sm:w-24 sm:h-24 rounded-full border border-slate-200/80 shadow-md object-cover mx-auto mb-2.5 hover:scale-105 transition-transform duration-200">
             <h1 class="text-2xl font-bold text-slate-900 tracking-tight">Duit Buyut Loe</h1>
             <p class="text-xs text-slate-500 mt-1">Masuk pake Nomor Induk Kewarasan (NIK), jangan pura-pura ga waras</p>
         </div>
