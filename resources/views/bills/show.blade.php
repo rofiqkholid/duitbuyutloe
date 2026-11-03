@@ -86,7 +86,7 @@
                                     class="px-2.5 py-1.5 rounded-lg bg-white border border-slate-200 hover:bg-slate-100 text-slate-600 hover:text-slate-900 transition-colors flex items-center gap-1.5 flex-shrink-0 cursor-pointer">
                                 <span class="copy-default flex items-center gap-1.5">
                                     <i data-lucide="copy" class="w-3.5 h-3.5"></i>
-                                    <span class="text-xs font-semibold">Salin No. Rek</span>
+                                    <span class="text-xs font-semibold">Salin<span class="hidden sm:inline"> No. Rek</span></span>
                                 </span>
                                 <span class="copy-success hidden items-center gap-1.5 text-emerald-600 font-bold">
                                     <i data-lucide="check" class="w-3.5 h-3.5"></i>
@@ -103,7 +103,7 @@
 
                 <div class="pt-4 mt-4 border-t border-slate-200/70 flex items-center justify-between text-xs gap-2">
                     <div class="flex items-center gap-1.5 sm:gap-2">
-                        <span class="text-slate-500 font-normal">Tanggal terbit dosa:</span>
+                        <span class="text-slate-500 font-normal">Terbit dosa:</span>
                         <span class="font-medium text-slate-800">
                             <span class="sm:hidden">{{ \Carbon\Carbon::parse($bill->bill_date)->format('d M Y') }}</span>
                             <span class="hidden sm:inline">{{ \Carbon\Carbon::parse($bill->bill_date)->format('d F Y') }}</span>
@@ -146,7 +146,7 @@
                         @if(strtolower($bill->type) === 'lainnya')
                             nominal per orang beda-beda
                         @else
-                            bagi {{ $bill->shares->count() }} manusia
+                            bagi {{ $bill->shares->count() }} oknum
                         @endif
                     </span>
                 </div>
