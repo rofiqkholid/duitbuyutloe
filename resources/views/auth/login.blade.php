@@ -7,6 +7,24 @@
     <link rel="icon" type="image/png" sizes="192x192" href="/favicon.png">
     <link rel="apple-touch-icon" href="/favicon.png">
     <title>Login</title>
+    <script>
+        // Filter out internal Cloudflare Turnstile CSP & WebGPU noise from developer console
+        (function() {
+            const origError = console.error;
+            const origWarn = console.warn;
+            console.error = function(...args) {
+                const msg = args.map(a => (typeof a === 'object' && a !== null ? (a.message || '') : String(a))).join(' ');
+                if (msg.includes('Content Security Policy') && (msg.includes('challenges.cloudflare.com') || msg.includes('data:,'))) return;
+                if (msg.includes('Refused to connect because it violates the document\'s Content Security Policy')) return;
+                origError.apply(console, args);
+            };
+            console.warn = function(...args) {
+                const msg = args.map(a => (typeof a === 'object' && a !== null ? (a.message || '') : String(a))).join(' ');
+                if (msg.includes('powerPreference') || msg.includes('No available adapters')) return;
+                origWarn.apply(console, args);
+            };
+        })();
+    </script>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
 </head>
