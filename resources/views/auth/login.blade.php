@@ -56,8 +56,11 @@
                 <div class="flex items-center justify-between text-xs pt-0.5">
                     <label class="flex items-center gap-2 cursor-pointer text-slate-600">
                         <input type="checkbox" name="remember" class="rounded border-slate-300 text-indigo-600 focus:ring-indigo-500">
-                        Inget gue (Biar ga bolak-balik login)
+                        Inget gue
                     </label>
+                    <a href="{{ route('password.request') }}" class="font-medium text-indigo-600 hover:text-indigo-800 transition-colors">
+                        Lupa Password?
+                    </a>
                 </div>
 
                 @if(config('services.turnstile.site_key'))

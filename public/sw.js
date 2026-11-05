@@ -8,6 +8,5 @@ self.addEventListener('activate', (event) => {
 });
 
 self.addEventListener('fetch', (event) => {
-    // Biarkan browser handle fetch secara native
 });
 
