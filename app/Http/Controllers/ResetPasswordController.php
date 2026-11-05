@@ -33,33 +33,6 @@ class ResetPasswordController extends Controller
             'password.min' => 'Password minimal 6 karakter.',
         ]);
 
-        // Verifikasi Cloudflare Turnstile jika aktif
-        $turnstileSecret = config('services.turnstile.secret_key');
-        if ($turnstileSecret) {
-            $turnstileResponse = $request->input('cf-turnstile-response');
-            if (!$turnstileResponse) {
-                return back()->withErrors([
-                    'email' => 'Verifikasi Cloudflare Turnstile wajib dicentang.',
-                ])->withInput();
-            }
-
-            try {
-                $verify = Http::asForm()->timeout(5)->post('https://challenges.cloudflare.com/turnstile/v0/siteverify', [
-                    'secret' => $turnstileSecret,
-                    'response' => $turnstileResponse,
-                    'remoteip' => $request->ip(),
-                ]);
-
-                if (!$verify->json('success')) {
-                    return back()->withErrors([
-                        'email' => 'Verifikasi keamanan bot gagal. Silakan coba lagi.',
-                    ])->withInput();
-                }
-            } catch (\Exception $e) {
-                // Ignore timeout
-            }
-        }
-
         $status = Password::reset(
             $request->only('email', 'password', 'password_confirmation', 'token'),
             function ($user, $password) {

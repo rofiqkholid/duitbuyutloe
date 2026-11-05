@@ -22,33 +22,6 @@ class ForgotPasswordController extends Controller
             'nik.required' => 'Nomor Induk Kewarasan (NIK) wajib diisi.',
         ]);
 
-        // Verifikasi Cloudflare Turnstile jika secret key ada
-        $turnstileSecret = config('services.turnstile.secret_key');
-        if ($turnstileSecret) {
-            $turnstileResponse = $request->input('cf-turnstile-response');
-            if (!$turnstileResponse) {
-                return back()->withErrors([
-                    'nik' => 'Verifikasi Cloudflare Turnstile wajib dicentang.',
-                ])->withInput();
-            }
-
-            try {
-                $verify = Http::asForm()->timeout(5)->post('https://challenges.cloudflare.com/turnstile/v0/siteverify', [
-                    'secret' => $turnstileSecret,
-                    'response' => $turnstileResponse,
-                    'remoteip' => $request->ip(),
-                ]);
-
-                if (!$verify->json('success')) {
-                    return back()->withErrors([
-                        'nik' => 'Verifikasi keamanan bot gagal. Silakan coba lagi.',
-                    ])->withInput();
-                }
-            } catch (\Exception $e) {
-                // Ignore timeout
-            }
-        }
-
         $nik = strtoupper(trim($request->input('nik')));
         $user = User::where('nik', $nik)->first();
 

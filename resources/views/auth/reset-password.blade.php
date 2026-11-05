@@ -8,7 +8,6 @@
     <link rel="apple-touch-icon" href="/favicon.png">
     <title>Buat Password Baru - Duit Buyut Loe</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
-    <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
 </head>
 <body class="bg-slate-50 text-slate-800 h-screen h-dvh flex items-center justify-center p-4 pb-14 sm:pb-20 font-sans antialiased overflow-hidden overscroll-none bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(99,102,241,0.15),rgba(255,255,255,0))]">
 
@@ -73,10 +72,6 @@
                         </div>
                     </div>
                 </div>
-
-                @if(config('services.turnstile.site_key'))
-                    <div class="cf-turnstile my-1.5 sm:my-2 flex justify-center" data-sitekey="{{ config('services.turnstile.site_key') }}" data-theme="light"></div>
-                @endif
 
                 <button type="submit" class="w-full py-2.5 px-4 rounded-full font-bold text-sm btn-primary cursor-pointer">
                     Simpan & Ubah Password
