@@ -52,7 +52,7 @@
                         Nomor Induk Kewarasan (NIK)
                     </label>
                     <div class="relative">
-                        <input type="text" id="nik" name="nik" value="{{ old('nik') }}" placeholder="Ketik NIK lu di sini" required autofocus class="w-full pl-10 pr-3.5 py-2.5 rounded-xl bg-white border border-slate-300 text-slate-900 text-sm font-normal focus:outline-none focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600 placeholder:text-slate-400">
+                        <input type="text" id="nik" name="nik" value="{{ old('nik') }}" placeholder="Ketik NIK lu di sini" required autofocus autocomplete="off" class="w-full pl-10 pr-3.5 py-2.5 rounded-xl bg-white border border-slate-300 text-slate-900 text-sm font-normal focus:outline-none focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600 placeholder:text-slate-400">
                         <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
                             <i data-lucide="user" class="w-4 h-4"></i>
                         </div>

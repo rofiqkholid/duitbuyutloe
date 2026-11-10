@@ -190,7 +190,10 @@
                                 </div>
                             </td>
                             <td class="py-3 px-3 sm:px-4 font-semibold text-slate-900 text-xs sm:text-sm">
-                                Rp {{ number_format($share->amount, 0, ',', '.') }}
+                                @php
+                                    $displayNominal = (strtolower($bill->type) === 'lainnya') ? $share->amount : $bill->share_amount;
+                                @endphp
+                                Rp {{ number_format($displayNominal, 0, ',', '.') }}
                             </td>
                             <td class="py-3 px-3 sm:px-4">
                                 @if($share->status == 'approved')

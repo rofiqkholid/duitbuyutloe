@@ -204,8 +204,9 @@
                                         @endif
                                     </td>
                                     <td class="py-3 px-3 sm:px-4 text-left">
-                                        <a href="{{ route('bills.show', $share->bill->id) }}" class="text-xs font-semibold text-slate-600 hover:text-slate-900 px-3 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 transition-colors">
-                                            Bayar
+                                        <a href="{{ route('settlements.show', $share->id) }}" class="inline-flex items-center gap-1.5 text-xs font-bold text-white bg-emerald-600 hover:bg-emerald-700 px-3 py-1.5 rounded-lg transition-colors shadow-sm">
+                                            <i class="fa-solid fa-credit-card text-xs"></i>
+                                            <span>Bayar</span>
                                         </a>
                                     </td>
                                 </tr>
